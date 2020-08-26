@@ -59,6 +59,8 @@ public interface DocGlobalConstants {
 
     String RPC_ALL_IN_ONE_HTML_TPL = "dubbo/DubboAllInOne.html";
 
+    String RPC_EXCEL_TPL = "dubbo/DubboExcel.btl";
+
     String RPC_DEPENDENCY_MD_TPL = "dubbo/DubboApiDependency.md";
 
     String RPC_API_DOC_MD_TPL = "dubbo/Dubbo.md";
