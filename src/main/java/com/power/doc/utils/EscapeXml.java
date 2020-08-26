@@ -6,7 +6,6 @@ import org.beetl.core.Function;
 
 /**
  * @author : KINC
- * @date : 2020/8/26 16:46
  */
 public class EscapeXml implements Function {
     @Override
