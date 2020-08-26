@@ -146,4 +146,6 @@ public interface DocGlobalConstants {
     String EMPTY = "";
 
     String ENUM = "enum";
+
+    String REQUEST_MODEL = "com.jy.framework.rpc.client.dto.RequestModel";
 }

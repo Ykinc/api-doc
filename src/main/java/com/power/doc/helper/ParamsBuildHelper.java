@@ -54,6 +54,7 @@ public class ParamsBuildHelper {
         if (StringUtil.isEmpty(className)) {
             throw new RuntimeException("Class name can't be null or empty.");
         }
+
         ApiConfig apiConfig = projectBuilder.getApiConfig();
         int nextLevel = level + 1;
         // Check circular reference

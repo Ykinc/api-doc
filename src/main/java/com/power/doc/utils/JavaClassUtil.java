@@ -25,6 +25,7 @@ package com.power.doc.utils;
 import com.power.common.util.CollectionUtil;
 import com.power.common.util.StringUtil;
 import com.power.doc.constants.DocAnnotationConstants;
+import com.power.doc.constants.DocGlobalConstants;
 import com.power.doc.constants.DocValidatorAnnotationEnum;
 import com.power.doc.constants.ValidatorAnnotations;
 import com.power.doc.model.DocJavaField;
@@ -61,7 +62,7 @@ public class JavaClassUtil {
             return fieldList;
         } else if ("Object".equals(cls1.getSimpleName()) || "Timestamp".equals(cls1.getSimpleName()) ||
                 "Date".equals(cls1.getSimpleName()) || "Locale".equals(cls1.getSimpleName())
-                || "ClassLoader".equals(cls1.getSimpleName()) || JavaClassValidateUtil.isMap(cls1.getFullyQualifiedName())) {
+                || "ClassLoader".equals(cls1.getSimpleName()) || JavaClassValidateUtil.isMap(cls1.getFullyQualifiedName()) || DocGlobalConstants.REQUEST_MODEL.equals(cls1.getFullyQualifiedName())) {
             return fieldList;
         } else {
             String className = cls1.getFullyQualifiedName();
@@ -96,7 +97,7 @@ public class JavaClassUtil {
                 }
             }
             // ignore enum parent class
-            /*if (!cls1.isEnum()) {
+            if (!cls1.isEnum()) {
                 JavaClass parentClass = cls1.getSuperJavaClass();
                 fieldList.addAll(getFields(parentClass, counter, addedFields));
                 List<JavaType> implClasses = cls1.getImplements();
@@ -104,7 +105,7 @@ public class JavaClassUtil {
                     JavaClass javaClass = (JavaClass) type;
                     fieldList.addAll(getFields(javaClass, counter, addedFields));
                 }
-            }*/
+            }
             List<DocJavaField> docJavaFields = new ArrayList<>();
             for (JavaField javaField : cls1.getFields()) {
                 String fieldName = javaField.getName();
