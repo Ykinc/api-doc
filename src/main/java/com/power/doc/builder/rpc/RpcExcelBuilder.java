@@ -22,6 +22,7 @@
  */
 package com.power.doc.builder.rpc;
 
+import static com.power.doc.constants.DocGlobalConstants.ALL_IN_ONE_CSS;
 import static com.power.doc.constants.DocGlobalConstants.DICT_EN_TITLE;
 import static com.power.doc.constants.DocGlobalConstants.ERROR_CODE_LIST_CN_TITLE;
 import static com.power.doc.constants.DocGlobalConstants.ERROR_CODE_LIST_EN_TITLE;
@@ -30,10 +31,10 @@ import static com.power.doc.constants.DocGlobalConstants.FILE_SEPARATOR;
 import static com.power.doc.constants.DocGlobalConstants.HTML_API_DOC_TPL;
 import static com.power.doc.constants.DocGlobalConstants.INDEX_CSS_TPL;
 import static com.power.doc.constants.DocGlobalConstants.MARKDOWN_CSS_TPL;
-import static com.power.doc.constants.DocGlobalConstants.RPC_API_DOC_MD_TPL;
 import static com.power.doc.constants.DocGlobalConstants.RPC_DEPENDENCY_MD_TPL;
 import static com.power.doc.constants.DocGlobalConstants.RPC_EXCEL_TPL;
 import static com.power.doc.constants.DocGlobalConstants.RPC_INDEX_TPL;
+import static com.power.doc.constants.DocGlobalConstants.RPC_SINGLE_EXCEL_TPL;
 
 import com.power.common.util.CollectionUtil;
 import com.power.common.util.DateTimeUtil;
@@ -87,18 +88,11 @@ public class RpcExcelBuilder {
         ProjectDocConfigBuilder configBuilder = new ProjectDocConfigBuilder(config, javaProjectBuilder);
         RpcDocBuildTemplate docBuildTemplate = new RpcDocBuildTemplate();
         List<RpcApiDoc> apiDocList = docBuildTemplate.getApiData(configBuilder);
-        builderTemplate.buildAllInOne(apiDocList, config, javaProjectBuilder, RPC_EXCEL_TPL, INDEX_HTML);
-        /*if (config.isAllInOne()) {
-            Template indexCssTemplate = BeetlTemplateUtil.getByName(ALL_IN_ONE_CSS);
-            FileUtil.nioWriteFile(indexCssTemplate.render(), config.getOutPath() + FILE_SEPARATOR + ALL_IN_ONE_CSS);
+        if (config.isAllInOne()) {
             builderTemplate.buildAllInOne(apiDocList, config, javaProjectBuilder, RPC_EXCEL_TPL, INDEX_HTML);
         } else {
-            buildIndex(apiDocList, config);
-            copyCss(config.getOutPath());
             buildDoc(apiDocList, config.getOutPath());
-            buildErrorCodeDoc(config.getErrorCodes(), config.getOutPath());
-            buildDependency(config);
-        }*/
+        }
     }
 
     private static void copyCss(String outPath) {
@@ -152,25 +146,10 @@ public class RpcExcelBuilder {
      */
     private static void buildDoc(List<RpcApiDoc> apiDocList, String outPath) {
         FileUtil.mkdirs(outPath);
-        Template htmlApiDoc;
-        String strTime = DateTimeUtil.long2Str(now, DateTimeUtil.DATE_FORMAT_SECOND);
         for (RpcApiDoc rpcDoc : apiDocList) {
-            Template apiTemplate = BeetlTemplateUtil.getByName(RPC_API_DOC_MD_TPL);
-            apiTemplate.binding(TemplateVariable.DESC.getVariable(), rpcDoc.getDesc());
-            apiTemplate.binding(TemplateVariable.NAME.getVariable(), rpcDoc.getName());
-            apiTemplate.binding(TemplateVariable.LIST.getVariable(), rpcDoc.getList());
-            apiTemplate.binding(TemplateVariable.PROTOCOL.getVariable(),rpcDoc.getProtocol());
-            apiTemplate.binding(TemplateVariable.AUTHOR.getVariable(),rpcDoc.getAuthor());
-            apiTemplate.binding(TemplateVariable.VERSION.getVariable(),rpcDoc.getVersion());
-            apiTemplate.binding(TemplateVariable.URI.getVariable(),rpcDoc.getUri());
-
-            String html = MarkDownUtil.toHtml(apiTemplate.render());
-            htmlApiDoc = BeetlTemplateUtil.getByName(HTML_API_DOC_TPL);
-            htmlApiDoc.binding(TemplateVariable.HTML.getVariable(), html);
-            htmlApiDoc.binding(TemplateVariable.TITLE.getVariable(), rpcDoc.getDesc());
-            htmlApiDoc.binding(TemplateVariable.CREATE_TIME.getVariable(), strTime);
-            htmlApiDoc.binding(TemplateVariable.VERSION.getVariable(), now);
-            FileUtil.nioWriteFile(htmlApiDoc.render(), outPath + FILE_SEPARATOR + rpcDoc.getAlias() + ".html");
+            Template apiTemplate = BeetlTemplateUtil.getByName(RPC_SINGLE_EXCEL_TPL);
+            apiTemplate.binding(TemplateVariable.API.getVariable(), rpcDoc);
+            FileUtil.nioWriteFile(apiTemplate.render(), outPath + FILE_SEPARATOR + rpcDoc.getAlias() + ".xls");
         }
     }
 
