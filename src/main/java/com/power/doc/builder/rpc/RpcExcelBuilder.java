@@ -22,7 +22,6 @@
  */
 package com.power.doc.builder.rpc;
 
-import static com.power.doc.constants.DocGlobalConstants.ALL_IN_ONE_CSS;
 import static com.power.doc.constants.DocGlobalConstants.DICT_EN_TITLE;
 import static com.power.doc.constants.DocGlobalConstants.ERROR_CODE_LIST_CN_TITLE;
 import static com.power.doc.constants.DocGlobalConstants.ERROR_CODE_LIST_EN_TITLE;
@@ -31,7 +30,6 @@ import static com.power.doc.constants.DocGlobalConstants.FILE_SEPARATOR;
 import static com.power.doc.constants.DocGlobalConstants.HTML_API_DOC_TPL;
 import static com.power.doc.constants.DocGlobalConstants.INDEX_CSS_TPL;
 import static com.power.doc.constants.DocGlobalConstants.MARKDOWN_CSS_TPL;
-import static com.power.doc.constants.DocGlobalConstants.RPC_ALL_IN_ONE_HTML_TPL;
 import static com.power.doc.constants.DocGlobalConstants.RPC_API_DOC_MD_TPL;
 import static com.power.doc.constants.DocGlobalConstants.RPC_DEPENDENCY_MD_TPL;
 import static com.power.doc.constants.DocGlobalConstants.RPC_EXCEL_TPL;
@@ -62,7 +60,7 @@ public class RpcExcelBuilder {
 
     private static long now = System.currentTimeMillis();
 
-    private static String INDEX_HTML = "rpc.excel";
+    private static String INDEX_HTML = "rpc.xlsx";
 
 
     /**
