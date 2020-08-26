@@ -26,6 +26,7 @@ package com.power.doc.constants;
  * @author yu 2019/9/21.
  */
 public enum TemplateVariable {
+    APP_NAME("appName"),
     DESC("desc"),
     NAME("name"),
     LIST("list"),

@@ -93,6 +93,7 @@ public class RpcDocBuilderTemplate extends BaseDocBuilderTemplate {
         FileUtil.mkdirs(outPath);
         List<ApiErrorCode> errorCodeList = errorCodeDictToList(config);
         Template tpl = BeetlTemplateUtil.getByName(template);
+        tpl.binding(TemplateVariable.APP_NAME.getVariable(),config.getAppName());
         tpl.binding(TemplateVariable.API_DOC_LIST.getVariable(), apiDocList);
         tpl.binding(TemplateVariable.ERROR_CODE_LIST.getVariable(), errorCodeList);
         tpl.binding(TemplateVariable.VERSION_LIST.getVariable(), config.getRevisionLogs());

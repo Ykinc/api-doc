@@ -39,6 +39,11 @@ import java.util.stream.Collectors;
 public class ApiConfig {
 
     /**
+     * app name
+     */
+    private String appName;
+
+    /**
      * Web server base url
      */
     private String serverUrl;
@@ -240,6 +245,13 @@ public class ApiConfig {
      */
     private List<String> ignoreRequestParams;
 
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
 
     public String getServerUrl() {
         return serverUrl;

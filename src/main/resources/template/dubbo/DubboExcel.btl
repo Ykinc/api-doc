@@ -50,8 +50,8 @@
    <Column ss:AutoFitWidth="0" ss:Width="117"/>
    <Column ss:AutoFitWidth="0" ss:Width="113.25"/>
    <Column ss:Index="5" ss:AutoFitWidth="0" ss:Width="203.25"/>
-   <%for api in apiDocList{%>
-	<%for doc in api.list{%>
+   <%for (api in apiDocList){%>
+	<%for (doc in api.list){%>
 	<Row ss:AutoFitHeight="0">
     <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">接口名称：${doc.desc}</Data></Cell>
    </Row>
@@ -78,7 +78,7 @@
     <Cell><Data ss:Type="String">required</Data></Cell>
     <Cell><Data ss:Type="String">since</Data></Cell>
    </Row>
-   <%for param in doc.requestParams{%>
+   <%for (param in doc.requestParams){%>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s65"><Data ss:Type="String">${param.field}</Data></Cell>
     <Cell ss:StyleID="s65"><Data ss:Type="String">${param.type}</Data></Cell>
@@ -99,7 +99,7 @@
     <Cell><Data ss:Type="String">required</Data></Cell>
     <Cell><Data ss:Type="String">since</Data></Cell>
    </Row>
-   <%for param in doc.responseParams{%>
+   <%for (param in doc.responseParams){%>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s65"><Data ss:Type="String">${param.field}</Data></Cell>
     <Cell ss:StyleID="s65"><Data ss:Type="String">${param.type}</Data></Cell>
