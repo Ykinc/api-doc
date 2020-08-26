@@ -59,7 +59,7 @@
     <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">请求URL：/${appName}/${api.shortName}/${doc.name}</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">Definition：${doc.methodDefinition}</Data></Cell>
+    <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">Definition：${ strutil.replace(strutil.replace (doc.methodDefinition,"<","&lt;"),">","&gt;")}</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:MergeAcross="4" ss:StyleID="s71"><ss:Data ss:Type="String"
