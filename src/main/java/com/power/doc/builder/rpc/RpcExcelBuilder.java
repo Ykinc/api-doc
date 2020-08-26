@@ -91,7 +91,7 @@ public class RpcExcelBuilder {
         if (config.isAllInOne()) {
             builderTemplate.buildAllInOne(apiDocList, config, javaProjectBuilder, RPC_EXCEL_TPL, INDEX_HTML);
         } else {
-            buildDoc(apiDocList, config.getOutPath());
+            buildDoc(apiDocList, config.getOutPath(),config);
         }
     }
 
@@ -144,11 +144,12 @@ public class RpcExcelBuilder {
      * @param apiDocList list of api doc
      * @param outPath    output path
      */
-    private static void buildDoc(List<RpcApiDoc> apiDocList, String outPath) {
+    private static void buildDoc(List<RpcApiDoc> apiDocList, String outPath,ApiConfig config) {
         FileUtil.mkdirs(outPath);
         for (RpcApiDoc rpcDoc : apiDocList) {
             Template apiTemplate = BeetlTemplateUtil.getByName(RPC_SINGLE_EXCEL_TPL);
             apiTemplate.binding(TemplateVariable.API.getVariable(), rpcDoc);
+            apiTemplate.binding(TemplateVariable.APP_NAME.getVariable(), config.getAppName());
             FileUtil.nioWriteFile(apiTemplate.render(), outPath + FILE_SEPARATOR + rpcDoc.getAlias() + ".xls");
         }
     }
