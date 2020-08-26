@@ -60,7 +60,7 @@ public class RpcExcelBuilder {
 
     private static long now = System.currentTimeMillis();
 
-    private static String INDEX_HTML = "rpc.xlsx";
+    private static String INDEX_HTML = "rpc.xls";
 
 
     /**
