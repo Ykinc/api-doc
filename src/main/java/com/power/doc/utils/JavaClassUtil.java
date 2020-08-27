@@ -97,7 +97,7 @@ public class JavaClassUtil {
                 }
             }
             // ignore enum parent class
-            if (!cls1.isEnum()) {
+            /*if (!cls1.isEnum()) {
                 JavaClass parentClass = cls1.getSuperJavaClass();
                 fieldList.addAll(getFields(parentClass, counter, addedFields));
                 List<JavaType> implClasses = cls1.getImplements();
@@ -105,7 +105,7 @@ public class JavaClassUtil {
                     JavaClass javaClass = (JavaClass) type;
                     fieldList.addAll(getFields(javaClass, counter, addedFields));
                 }
-            }
+            }*/
             List<DocJavaField> docJavaFields = new ArrayList<>();
             for (JavaField javaField : cls1.getFields()) {
                 String fieldName = javaField.getName();
