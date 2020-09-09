@@ -19,6 +19,8 @@ public interface DocGlobalConstants {
 
     String API_DOC_MD_TPL = "ApiDoc.btl";
 
+    String ALL_IN_ON_EXCEL_TPL = "AllInOneExcel.btl";
+
     String API_DOC_ADOC_TPL = "ApiDoc.adoc";
 
     String ALL_IN_ONE_MD_TPL = "AllInOne.btl";

@@ -20,47 +20,55 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.power.doc.builder.rpc;
+package com.power.doc.builder;
 
+import static com.power.doc.constants.DocGlobalConstants.ALL_IN_ONE_CSS;
+import static com.power.doc.constants.DocGlobalConstants.ALL_IN_ONE_HTML_TPL;
+import static com.power.doc.constants.DocGlobalConstants.ALL_IN_ON_EXCEL_TPL;
+import static com.power.doc.constants.DocGlobalConstants.API_DOC_MD_TPL;
 import static com.power.doc.constants.DocGlobalConstants.DICT_EN_TITLE;
+import static com.power.doc.constants.DocGlobalConstants.DICT_LIST_MD_TPL;
 import static com.power.doc.constants.DocGlobalConstants.ERROR_CODE_LIST_CN_TITLE;
 import static com.power.doc.constants.DocGlobalConstants.ERROR_CODE_LIST_EN_TITLE;
 import static com.power.doc.constants.DocGlobalConstants.ERROR_CODE_LIST_MD_TPL;
 import static com.power.doc.constants.DocGlobalConstants.FILE_SEPARATOR;
 import static com.power.doc.constants.DocGlobalConstants.HTML_API_DOC_TPL;
 import static com.power.doc.constants.DocGlobalConstants.INDEX_CSS_TPL;
+import static com.power.doc.constants.DocGlobalConstants.INDEX_TPL;
 import static com.power.doc.constants.DocGlobalConstants.MARKDOWN_CSS_TPL;
-import static com.power.doc.constants.DocGlobalConstants.RPC_DEPENDENCY_MD_TPL;
-import static com.power.doc.constants.DocGlobalConstants.RPC_EXCEL_TPL;
-import static com.power.doc.constants.DocGlobalConstants.RPC_INDEX_TPL;
-import static com.power.doc.constants.DocGlobalConstants.RPC_SINGLE_EXCEL_TPL;
 
 import com.power.common.util.CollectionUtil;
 import com.power.common.util.DateTimeUtil;
 import com.power.common.util.FileUtil;
-import com.power.doc.builder.ProjectDocConfigBuilder;
+import com.power.doc.constants.DocGlobalConstants;
 import com.power.doc.constants.DocLanguage;
 import com.power.doc.constants.TemplateVariable;
 import com.power.doc.model.ApiConfig;
+import com.power.doc.model.ApiDoc;
+import com.power.doc.model.ApiDocDict;
 import com.power.doc.model.ApiErrorCode;
-import com.power.doc.model.rpc.RpcApiDependency;
-import com.power.doc.model.rpc.RpcApiDoc;
-import com.power.doc.template.RpcDocBuildTemplate;
+import com.power.doc.template.IDocBuildTemplate;
+import com.power.doc.template.SpringBootDocBuildTemplate;
 import com.power.doc.utils.BeetlTemplateUtil;
 import com.power.doc.utils.MarkDownUtil;
 import com.thoughtworks.qdox.JavaProjectBuilder;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.beetl.core.Template;
 
 /**
- * @author yu 2020/5/17.
+ * @author yu 2019/9/20.
+ * @since 1.7+
  */
-public class RpcExcelBuilder {
+public class ExcelApiDocBuilder {
 
     private static long now = System.currentTimeMillis();
 
-    private static String INDEX_HTML = "rpc.xls";
+    private static final String STR_TIME = DateTimeUtil.long2Str(now, DateTimeUtil.DATE_FORMAT_SECOND);
+
+    private static String INDEX_HTML = "api.xls";
 
 
     /**
@@ -80,17 +88,19 @@ public class RpcExcelBuilder {
      * @param javaProjectBuilder ProjectDocConfigBuilder
      */
     public static void buildApiDoc(ApiConfig config, JavaProjectBuilder javaProjectBuilder) {
-        config.setShowJavaType(true);
-        RpcDocBuilderTemplate builderTemplate = new RpcDocBuilderTemplate();
+        DocBuilderTemplate builderTemplate = new DocBuilderTemplate();
         builderTemplate.checkAndInit(config);
-        builderTemplate.checkAndInit(config);
+        config.setParamsDataToTree(false);
         ProjectDocConfigBuilder configBuilder = new ProjectDocConfigBuilder(config, javaProjectBuilder);
-        RpcDocBuildTemplate docBuildTemplate = new RpcDocBuildTemplate();
-        List<RpcApiDoc> apiDocList = docBuildTemplate.getApiData(configBuilder);
+        IDocBuildTemplate docBuildTemplate = new SpringBootDocBuildTemplate();
+        List<ApiDoc> apiDocList = docBuildTemplate.getApiData(configBuilder);
         if (config.isAllInOne()) {
-            builderTemplate.buildAllInOne(apiDocList, config, javaProjectBuilder, RPC_EXCEL_TPL, INDEX_HTML);
+            if (StringUtils.isNotEmpty(config.getAllInOneDocFileName())) {
+                INDEX_HTML = config.getAllInOneDocFileName();
+            }
+            builderTemplate.buildAllInOne(apiDocList, config, javaProjectBuilder, ALL_IN_ON_EXCEL_TPL, INDEX_HTML);
         } else {
-            buildDoc(apiDocList, config.getOutPath(),config);
+            buildDoc(apiDocList, config.getOutPath());
         }
     }
 
@@ -107,34 +117,37 @@ public class RpcExcelBuilder {
      * @param apiDocList list of api doc
      * @param config     ApiConfig
      */
-    private static void buildIndex(List<RpcApiDoc> apiDocList, ApiConfig config) {
+    private static void buildIndex(List<ApiDoc> apiDocList, ApiConfig config) {
         FileUtil.mkdirs(config.getOutPath());
-        Template indexTemplate = BeetlTemplateUtil.getByName(RPC_INDEX_TPL);
+        Template indexTemplate = BeetlTemplateUtil.getByName(INDEX_TPL);
         if (CollectionUtil.isEmpty(apiDocList)) {
             return;
         }
-        RpcApiDoc doc = apiDocList.get(0);
+        ApiDoc doc = apiDocList.get(0);
         String homePage = doc.getAlias();
         indexTemplate.binding(TemplateVariable.HOME_PAGE.getVariable(), homePage);
-        indexTemplate.binding(TemplateVariable.API_DOC_LIST.getVariable(), apiDocList);
         indexTemplate.binding(TemplateVariable.VERSION.getVariable(), now);
+        indexTemplate.binding(TemplateVariable.API_DOC_LIST.getVariable(), apiDocList);
         indexTemplate.binding(TemplateVariable.ERROR_CODE_LIST.getVariable(), config.getErrorCodes());
         indexTemplate.binding(TemplateVariable.DICT_LIST.getVariable(), config.getDataDictionaries());
         if (CollectionUtil.isEmpty(config.getErrorCodes())) {
-            indexTemplate.binding(TemplateVariable.DICT_ORDER.getVariable(), apiDocList.size() + 2);
+            indexTemplate.binding(TemplateVariable.DICT_ORDER.getVariable(), apiDocList.size() + 1);
         } else {
-            indexTemplate.binding(TemplateVariable.DICT_ORDER.getVariable(), apiDocList.size() + 3);
+            indexTemplate.binding(TemplateVariable.DICT_ORDER.getVariable(), apiDocList.size() + 2);
         }
         if (null != config.getLanguage()) {
             if (DocLanguage.CHINESE.code.equals(config.getLanguage().getCode())) {
                 indexTemplate.binding(TemplateVariable.ERROR_LIST_TITLE.getVariable(), ERROR_CODE_LIST_CN_TITLE);
+                indexTemplate.binding(TemplateVariable.DICT_LIST_TITLE.getVariable(), DocGlobalConstants.DICT_CN_TITLE);
             } else {
                 indexTemplate.binding(TemplateVariable.ERROR_LIST_TITLE.getVariable(), ERROR_CODE_LIST_EN_TITLE);
+                indexTemplate.binding(TemplateVariable.DICT_LIST_TITLE.getVariable(), DocGlobalConstants.DICT_EN_TITLE);
             }
         } else {
             indexTemplate.binding(TemplateVariable.ERROR_LIST_TITLE.getVariable(), ERROR_CODE_LIST_CN_TITLE);
+            indexTemplate.binding(TemplateVariable.DICT_LIST_TITLE.getVariable(), DocGlobalConstants.DICT_CN_TITLE);
         }
-        FileUtil.nioWriteFile(indexTemplate.render(), config.getOutPath() + FILE_SEPARATOR + "rpc-api.html");
+        FileUtil.nioWriteFile(indexTemplate.render(), config.getOutPath() + FILE_SEPARATOR + "api.html");
     }
 
     /**
@@ -143,13 +156,18 @@ public class RpcExcelBuilder {
      * @param apiDocList list of api doc
      * @param outPath    output path
      */
-    private static void buildDoc(List<RpcApiDoc> apiDocList, String outPath,ApiConfig config) {
+    private static void buildDoc(List<ApiDoc> apiDocList, String outPath) {
         FileUtil.mkdirs(outPath);
-        for (RpcApiDoc rpcDoc : apiDocList) {
-            Template apiTemplate = BeetlTemplateUtil.getByName(RPC_SINGLE_EXCEL_TPL);
-            apiTemplate.binding(TemplateVariable.API.getVariable(), rpcDoc);
-            apiTemplate.binding(TemplateVariable.APP_NAME.getVariable(), config.getAppName());
-            FileUtil.nioWriteFile(apiTemplate.render(), outPath + FILE_SEPARATOR + rpcDoc.getAlias() + ".xls");
+        Template htmlApiDoc;
+        for (ApiDoc doc : apiDocList) {
+            Template apiTemplate = BeetlTemplateUtil.getByName(ALL_IN_ON_EXCEL_TPL);
+            apiTemplate.binding(TemplateVariable.DESC.getVariable(), doc.getDesc());
+            apiTemplate.binding(TemplateVariable.NAME.getVariable(), doc.getName());
+            apiTemplate.binding(TemplateVariable.LIST.getVariable(), doc.getList());//类名
+            Map<String, Object> templateVariables = new HashMap<>();
+            templateVariables.put(TemplateVariable.TITLE.getVariable(), doc.getDesc());
+            htmlApiDoc = initTemplate(apiTemplate, ALL_IN_ON_EXCEL_TPL, templateVariables);
+            FileUtil.nioWriteFile(htmlApiDoc.render(), outPath + FILE_SEPARATOR + doc.getAlias() + ".xls");
         }
     }
 
@@ -161,14 +179,11 @@ public class RpcExcelBuilder {
      */
     private static void buildErrorCodeDoc(List<ApiErrorCode> errorCodeList, String outPath) {
         if (CollectionUtil.isNotEmpty(errorCodeList)) {
-            Template error = BeetlTemplateUtil.getByName(ERROR_CODE_LIST_MD_TPL);
-            error.binding(TemplateVariable.LIST.getVariable(), errorCodeList);
-            String errorHtml = MarkDownUtil.toHtml(error.render());
-            Template errorCodeDoc = BeetlTemplateUtil.getByName(HTML_API_DOC_TPL);
-            errorCodeDoc.binding(TemplateVariable.VERSION.getVariable(), now);
-            errorCodeDoc.binding(TemplateVariable.HTML.getVariable(), errorHtml);
-            errorCodeDoc.binding(TemplateVariable.TITLE.getVariable(), ERROR_CODE_LIST_EN_TITLE);
-            errorCodeDoc.binding(TemplateVariable.CREATE_TIME.getVariable(), DateTimeUtil.long2Str(now, DateTimeUtil.DATE_FORMAT_SECOND));
+            Template errorTemplate = BeetlTemplateUtil.getByName(ERROR_CODE_LIST_MD_TPL);
+            errorTemplate.binding(TemplateVariable.LIST.getVariable(), errorCodeList);
+            Map<String, Object> templateVariables = new HashMap<>();
+            templateVariables.put(TemplateVariable.TITLE.getVariable(), ERROR_CODE_LIST_EN_TITLE);
+            Template errorCodeDoc = initTemplate(errorTemplate, HTML_API_DOC_TPL, templateVariables);
             FileUtil.nioWriteFile(errorCodeDoc.render(), outPath + FILE_SEPARATOR + "error_code.html");
         }
     }
@@ -176,26 +191,27 @@ public class RpcExcelBuilder {
     /**
      * build dictionary
      *
-     * @param config dictionary list
+     * @param apiDocDictList dictionary list
+     * @param outPath
      */
-    private static void buildDependency(ApiConfig config) {
-        List<RpcApiDependency> apiDependencies = config.getRpcApiDependencies();
-        if (CollectionUtil.isNotEmpty(config.getRpcApiDependencies())) {
-            String rpcConfig = config.getRpcConsumerConfig();
-            String rpcConfigConfigContent = null;
-            if (Objects.nonNull(rpcConfig)) {
-                rpcConfigConfigContent = FileUtil.getFileContent(rpcConfig);
-            }
-            Template template = BeetlTemplateUtil.getByName(RPC_DEPENDENCY_MD_TPL);
-            template.binding(TemplateVariable.RPC_CONSUMER_CONFIG.getVariable(), rpcConfigConfigContent);
-            template.binding(TemplateVariable.DEPENDENCY_LIST.getVariable(), apiDependencies);
-            String dictHtml = MarkDownUtil.toHtml(template.render());
-            Template dictTpl = BeetlTemplateUtil.getByName(HTML_API_DOC_TPL);
-            dictTpl.binding(TemplateVariable.VERSION.getVariable(), now);
-            dictTpl.binding(TemplateVariable.TITLE.getVariable(), DICT_EN_TITLE);
-            dictTpl.binding(TemplateVariable.HTML.getVariable(), dictHtml);
-            dictTpl.binding(TemplateVariable.CREATE_TIME.getVariable(), DateTimeUtil.long2Str(now, DateTimeUtil.DATE_FORMAT_SECOND));
-            FileUtil.nioWriteFile(dictTpl.render(), config.getOutPath() + FILE_SEPARATOR + "dependency.html");
+    private static void buildDictionary(List<ApiDocDict> apiDocDictList, String outPath) {
+        if (CollectionUtil.isNotEmpty(apiDocDictList)) {
+            Template template = BeetlTemplateUtil.getByName(DICT_LIST_MD_TPL);
+            template.binding(TemplateVariable.DICT_LIST.getVariable(), apiDocDictList);
+            Map<String, Object> templateVariables = new HashMap<>();
+            templateVariables.put(TemplateVariable.TITLE.getVariable(), DICT_EN_TITLE);
+            Template dictTpl = initTemplate(template, HTML_API_DOC_TPL, templateVariables);
+            FileUtil.nioWriteFile(dictTpl.render(), outPath + FILE_SEPARATOR + "dict.html");
         }
+    }
+
+    private static Template initTemplate(Template template, String templateName, Map<String, Object> templateVariables) {
+        String errorHtml = MarkDownUtil.toHtml(template.render());
+        Template template1 = BeetlTemplateUtil.getByName(templateName);
+        template1.binding(TemplateVariable.VERSION.getVariable(), now);
+        template1.binding(TemplateVariable.HTML.getVariable(), errorHtml);
+        template1.binding(TemplateVariable.CREATE_TIME.getVariable(), STR_TIME);
+        template1.binding(templateVariables);
+        return template1;
     }
 }

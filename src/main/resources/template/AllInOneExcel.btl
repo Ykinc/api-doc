@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Author>Hwang</Author>
+  <LastAuthor>Hwang</LastAuthor>
+  <Created>2015-06-05T18:19:34Z</Created>
+  <LastSaved>2020-08-26T06:13:10Z</LastSaved>
+  <Version>16.00</Version>
+ </DocumentProperties>
+ <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
+  <AllowPNG/>
+ </OfficeDocumentSettings>
+ <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+  <WindowHeight>12645</WindowHeight>
+  <WindowWidth>22260</WindowWidth>
+  <WindowTopX>32767</WindowTopX>
+  <WindowTopY>32767</WindowTopY>
+  <ProtectStructure>False</ProtectStructure>
+  <ProtectWindows>False</ProtectWindows>
+ </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font ss:FontName="等线" x:CharSet="134" ss:Size="11" ss:Color="#000000"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s65">
+   <Font ss:FontName="Segoe UI" x:Family="Swiss" ss:Size="12" ss:Color="#333333"/>
+  </Style>
+  <Style ss:ID="s70">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+  </Style>
+  <Style ss:ID="s71">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Font ss:FontName="Segoe UI" x:Family="Swiss" ss:Size="12" ss:Color="#333333"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Sheet1">
+  <Table ss:ExpandedColumnCount="5" ss:ExpandedRowCount="65535" x:FullColumns="1"
+   x:FullRows="1" ss:DefaultColumnWidth="54" ss:DefaultRowHeight="20.0625">
+   <Column ss:AutoFitWidth="0" ss:Width="118.5"/>
+   <Column ss:AutoFitWidth="0" ss:Width="117"/>
+   <Column ss:AutoFitWidth="0" ss:Width="113.25"/>
+   <Column ss:Index="5" ss:AutoFitWidth="0" ss:Width="203.25"/>
+   <%for (api in apiDocList){%>
+	<%for (doc in api.list){%>
+	<Row ss:AutoFitHeight="0">
+    <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">接口名称：${escapeXml(doc.desc)}</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">请求URL：/${appName}/${api.shortName}/${doc.name}</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">Definition：${escapeXml(doc.methodDefinition)}</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:MergeAcross="4" ss:StyleID="s71"><ss:Data ss:Type="String"
+      xmlns="http://www.w3.org/TR/REC-html40"><Font html:Color="#333333">auth</Font><Font
+       html:Face="宋体" x:CharSet="134" html:Color="#333333">：</Font><Font
+       html:Color="#333333">WH</Font></ss:Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">入参：</Data></Cell>
+   </Row>
+   <%if(isNotEmpty(doc.requestParams)){%>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">name</Data></Cell>
+    <Cell><Data ss:Type="String">type</Data></Cell>
+    <Cell><Data ss:Type="String">description</Data></Cell>
+    <Cell><Data ss:Type="String">required</Data></Cell>
+    <Cell><Data ss:Type="String">since</Data></Cell>
+   </Row>
+   <%for (param in doc.requestParams){%>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s65"><Data ss:Type="String">${param.field}</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">${param.type}</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">${escapeXml(param.desc)}</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">${param.required}</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">${param.version}</Data></Cell>
+   </Row>
+   <%}%>
+   <%}%>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">出参：</Data></Cell>
+   </Row>
+   <%if(isNotEmpty(doc.responseParams)){%>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">name</Data></Cell>
+    <Cell><Data ss:Type="String">type</Data></Cell>
+    <Cell><Data ss:Type="String">description</Data></Cell>
+    <Cell><Data ss:Type="String">required</Data></Cell>
+    <Cell><Data ss:Type="String">since</Data></Cell>
+   </Row>
+   <%for (param in doc.responseParams){%>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s65"><Data ss:Type="String">${param.field}</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">${param.type}</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">${escapeXml(param.desc)}</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">${param.required}</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">${param.version}</Data></Cell>
+   </Row>
+   <%}%>
+   <%}%>
+   <%}%>
+   <%}%>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <PageSetup>
+    <Header x:Margin="0.3"/>
+    <Footer x:Margin="0.3"/>
+    <PageMargins x:Bottom="0.75" x:Left="0.7" x:Right="0.7" x:Top="0.75"/>
+   </PageSetup>
+   <Unsynced/>
+   <Print>
+    <ValidPrinterInfo/>
+    <PaperSizeIndex>9</PaperSizeIndex>
+    <HorizontalResolution>600</HorizontalResolution>
+    <VerticalResolution>0</VerticalResolution>
+   </Print>
+   <Selected/>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>8</ActiveRow>
+     <RangeSelection>R9C1:R9C5</RangeSelection>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>
