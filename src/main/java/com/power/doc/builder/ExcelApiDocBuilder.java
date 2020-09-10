@@ -36,6 +36,7 @@ import static com.power.doc.constants.DocGlobalConstants.HTML_API_DOC_TPL;
 import static com.power.doc.constants.DocGlobalConstants.INDEX_CSS_TPL;
 import static com.power.doc.constants.DocGlobalConstants.INDEX_TPL;
 import static com.power.doc.constants.DocGlobalConstants.MARKDOWN_CSS_TPL;
+import static com.power.doc.constants.DocGlobalConstants.SINGLE_EXCEL_TPL;
 
 import com.power.common.util.CollectionUtil;
 import com.power.common.util.DateTimeUtil;
@@ -158,16 +159,10 @@ public class ExcelApiDocBuilder {
      */
     private static void buildDoc(List<ApiDoc> apiDocList, String outPath) {
         FileUtil.mkdirs(outPath);
-        Template htmlApiDoc;
         for (ApiDoc doc : apiDocList) {
-            Template apiTemplate = BeetlTemplateUtil.getByName(ALL_IN_ON_EXCEL_TPL);
-            apiTemplate.binding(TemplateVariable.DESC.getVariable(), doc.getDesc());
-            apiTemplate.binding(TemplateVariable.NAME.getVariable(), doc.getName());
+            Template apiTemplate = BeetlTemplateUtil.getByName(SINGLE_EXCEL_TPL);
             apiTemplate.binding(TemplateVariable.LIST.getVariable(), doc.getList());//类名
-            Map<String, Object> templateVariables = new HashMap<>();
-            templateVariables.put(TemplateVariable.TITLE.getVariable(), doc.getDesc());
-            htmlApiDoc = initTemplate(apiTemplate, ALL_IN_ON_EXCEL_TPL, templateVariables);
-            FileUtil.nioWriteFile(htmlApiDoc.render(), outPath + FILE_SEPARATOR + doc.getAlias() + ".xls");
+            FileUtil.nioWriteFile(apiTemplate.render(), outPath + FILE_SEPARATOR + doc.getAlias() + ".xls");
         }
     }
 

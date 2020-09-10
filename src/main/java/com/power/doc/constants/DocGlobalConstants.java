@@ -21,6 +21,8 @@ public interface DocGlobalConstants {
 
     String ALL_IN_ON_EXCEL_TPL = "AllInOneExcel.btl";
 
+    String SINGLE_EXCEL_TPL = "SingleExcel.btl";
+
     String API_DOC_ADOC_TPL = "ApiDoc.adoc";
 
     String ALL_IN_ONE_MD_TPL = "AllInOne.btl";
@@ -139,7 +141,7 @@ public interface DocGlobalConstants {
 
     String SHORT_MULTIPART_FILE_FULLY = "MultipartFile";
 
-    String DEFAULT_SERVER_URL = "http://{server}";
+    String DEFAULT_SERVER_URL = "";
 
     String SHORT_REQUEST_BODY = "RequestBody";
 
