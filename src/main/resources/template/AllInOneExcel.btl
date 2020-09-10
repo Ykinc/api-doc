@@ -56,16 +56,13 @@
     <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">接口名称：${escapeXml(doc.desc)}</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">请求URL：/${appName}/${api.shortName}/${doc.name}</Data></Cell>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">Definition：${escapeXml(doc.methodDefinition)}</Data></Cell>
+    <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">请求URL：${doc.url}</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:MergeAcross="4" ss:StyleID="s71"><ss:Data ss:Type="String"
       xmlns="http://www.w3.org/TR/REC-html40"><Font html:Color="#333333">auth</Font><Font
        html:Face="宋体" x:CharSet="134" html:Color="#333333">：</Font><Font
-       html:Color="#333333">WH</Font></ss:Data></Cell>
+       html:Color="#333333">${doc.author}</Font></ss:Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:MergeAcross="4" ss:StyleID="s70"><Data ss:Type="String">入参：</Data></Cell>
