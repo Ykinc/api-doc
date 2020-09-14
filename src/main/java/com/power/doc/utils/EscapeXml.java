@@ -10,7 +10,10 @@ import org.beetl.core.Function;
 public class EscapeXml implements Function {
     @Override
     public String call(Object[] objects, Context context) {
+        if(objects==null){
+            return "";
+        }
         Object o = objects[0];
-        return StringEscapeUtils.escapeXml(o.toString());
+        return o==null?"":StringEscapeUtils.escapeXml(o.toString());
     }
 }
